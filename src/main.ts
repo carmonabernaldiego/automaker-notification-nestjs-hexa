@@ -21,8 +21,8 @@ async function bootstrap() {
 
   // Configuración de Swagger (solo para QA y DEV)
   const options = new DocumentBuilder()
-    .setTitle('API Accounts AutoMaker')
-    .setDescription('API Accounts AutoMaker')
+    .setTitle('API Notifications AutoMaker')
+    .setDescription('API Notifications AutoMaker')
     .setVersion('1.0')
     .addTag('MicroService')
     .addBearerAuth()
@@ -43,7 +43,7 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 3000, () => {
     Logger.log(
       `Listening on port: ${process.env.PORT || 3000}`,
-      'Accounts AutoMaker',
+      'Notifications AutoMaker',
     );
   });
 
@@ -54,7 +54,7 @@ async function bootstrap() {
       urls: [configService.get<string>('RABBITMQ_URL')], // Conexión con RabbitMQ
       queue: 'notifications_queue',
       queueOptions: {
-        durable: true,
+        durable: false,
       },
     },
   };

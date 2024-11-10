@@ -1,29 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { MessagePattern } from '@nestjs/microservices'; // Importar para manejar los mensajes
 
 @Injectable()
 export class NotificationsService {
   constructor(private readonly mailService: MailService) {}
 
-  // Método que escucha los mensajes en la cola de RabbitMQ
-  @MessagePattern('notifications_queue') // Nombre de la cola que está escuchando
-  async handleNotification(payload: any) {
-    const { type, email, code, resetLink } = payload;
-
-    switch (type) {
-      case 'login_error':
-        return await this.notifyUserError(email);
-      case 'confirmation_code':
-        return await this.sendConfirmationCode(email, code);
-      case 'password_reset':
-        return await this.sendPasswordReset(email, resetLink);
-      default:
-        throw new Error('Tipo de notificación no soportado');
-    }
-  }
-
-  // Métodos para enviar diferentes tipos de notificaciones
   async notifyUserError(email: string) {
     const subject = 'Error en el inicio de sesión';
     const text = 'Su nombre de usuario o contraseña es incorrecto.';

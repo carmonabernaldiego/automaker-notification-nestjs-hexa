@@ -5,13 +5,6 @@ import { NotificationsService } from './notifications.service';
 import { MailService } from './mail.service';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'NOTIFICATIONS_SERVICE',
-      },
-    ]),
-  ],
   controllers: [NotificationsController],
   providers: [NotificationsService, MailService],
 })
