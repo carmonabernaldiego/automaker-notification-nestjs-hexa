@@ -26,7 +26,7 @@ export class NotificationsService {
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color: #5cb85c;">Código de Confirmación</h2>
         <p>Estimado usuario,</p>
-        <p>Gracias por registrarse. Su código de confirmación es:</p>
+        <p>Su código de confirmación es:</p>
         <p style="font-size: 24px; font-weight: bold; color: #5cb85c;">${code}</p>
       </div>
     `;
