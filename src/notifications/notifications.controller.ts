@@ -9,7 +9,7 @@ export class NotificationsController {
   // Método que escucha los mensajes en la cola de RabbitMQ
   @EventPattern('send_notification')
   async handleNotification(payload: any) {
-    const { type, email, code, resetLink } = payload;
+    const { type, email, code } = payload;
 
     switch (type) {
       case 'login_error':
@@ -20,10 +20,7 @@ export class NotificationsController {
           code,
         );
       case 'password_reset':
-        return await this.notificationsService.sendPasswordReset(
-          email,
-          resetLink,
-        );
+        return await this.notificationsService.sendPasswordReset(email, code);
       default:
         throw new Error('Tipo de notificación no soportado');
     }

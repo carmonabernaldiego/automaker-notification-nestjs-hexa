@@ -34,20 +34,18 @@ export class NotificationsService {
     return { message: 'Código de confirmación enviado correctamente.' };
   }
 
-  async sendPasswordReset(email: string, resetLink: string) {
+  async sendPasswordReset(email: string, code: string) {
     const subject = 'Restablecimiento de Contraseña';
-    const text = `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetLink}`;
+    const text = `Tu código de restablecimiento de contraseña es: ${code}. Introduce este código en la aplicación para continuar con el proceso de cambio de contraseña.`;
     const html = `
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color: #337ab7;">Restablecimiento de Contraseña</h2>
         <p>Estimado usuario,</p>
-        <p>Hemos recibido una solicitud para restablecer su contraseña.</p>
-        <p>Para proceder, haga clic en el siguiente botón:</p>
-        <p style="text-align: center;">
-          <a href="${resetLink}" style="background-color: #337ab7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-            Restablecer Contraseña
-          </a>
-        </p>
+        <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
+        <p>Para continuar, por favor ingresa el siguiente código en la aplicación móvil:</p>
+        <div style="text-align: center; margin-top: 20px;">
+          <h3 style="font-size: 24px; font-weight: bold; color: #337ab7;">${code}</h3>
+        </div>
       </div>
     `;
     await this.mailService.sendEmail(email, subject, text, html);
