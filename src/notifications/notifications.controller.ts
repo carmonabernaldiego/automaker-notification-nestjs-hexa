@@ -21,16 +21,6 @@ export class NotificationsController {
     );
   }
 
-  @Post('send-sms') async sendSmsNotification(@Body() body: any) {
-    const { type, phoneNumber, code } = body;
-    switch (type) {
-      case 'login_error':
-        return await this.notificationsService.notifyUserErrorSms(phoneNumber); // Agrega más casos si tienes otras notificaciones
-      default:
-        throw new Error('Tipo de notificación no soportado');
-    }
-  }
-
   // Método que escucha los mensajes en la cola de RabbitMQ
   @EventPattern('send_notification')
   async handleNotification(payload: any) {

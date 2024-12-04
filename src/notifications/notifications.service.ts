@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { SmsService } from './sms.service';
 
 @Injectable()
 export class NotificationsService {
-  constructor(
-    private readonly mailService: MailService,
-    private readonly smsService: SmsService,
-  ) {}
+  constructor(private readonly mailService: MailService) {}
 
   /**
    * Sends a custom email notification with personalized content
@@ -77,13 +73,6 @@ export class NotificationsService {
         error: error.message,
       };
     }
-  }
-
-  // Método para enviar notificación de error de inicio de sesión por SMS
-  async notifyUserErrorSms(phoneNumber: string) {
-    const message = 'Su nombre de usuario o contraseña es incorrecto.';
-    await this.smsService.sendSms(phoneNumber, message);
-    return { message: 'Notificación de error enviada por SMS correctamente.' };
   }
 
   async notifyUserError(email: string) {
