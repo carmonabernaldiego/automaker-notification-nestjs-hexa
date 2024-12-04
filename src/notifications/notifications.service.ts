@@ -1,9 +1,90 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from './mail.service';
+import { SmsService } from './sms.service';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly mailService: MailService) {}
+  constructor(
+    private readonly mailService: MailService,
+    private readonly smsService: SmsService,
+  ) {}
+
+  /**
+   * Sends a custom email notification with personalized content
+   * @param email Recipient's email address
+   * @param subject Email subject
+   * @param message Custom message body
+   * @param options Optional customization for the email
+   */
+  async sendCustomNotification(
+    email: string,
+    subject: string,
+    message: string,
+    options?: {
+      customHtmlStyle?: string;
+      preHeader?: string;
+      footerText?: string;
+    },
+  ) {
+    // Default styling if no custom style is provided
+    const defaultStyle = `
+      font-family: Arial, sans-serif; 
+      color: #333; 
+      max-width: 600px; 
+      margin: 0 auto;
+    `;
+
+    // Construct HTML with optional customizations
+    const html = `
+      <div style="${options?.customHtmlStyle || defaultStyle}">
+        ${
+          options?.preHeader
+            ? `<p style="color: #666;">${options.preHeader}</p>`
+            : ''
+        }
+        
+        <div style="background-color: #f4f4f4; padding: 20px; border-radius: 5px;">
+          <h2 style="color: #2c3e50;">${subject}</h2>
+          <p>${message}</p>
+        </div>
+        
+        ${
+          options?.footerText
+            ? `
+          <div style="margin-top: 20px; font-size: 12px; color: #888;">
+            ${options.footerText}
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `;
+
+    // Plain text version of the message
+    const text = `${subject}\n\n${message}`;
+
+    try {
+      await this.mailService.sendEmail(email, subject, text, html);
+      return {
+        message: 'Custom notification email sent successfully',
+        status: 'success',
+      };
+    } catch (error) {
+      console.error('Error sending custom notification:', error);
+      return {
+        message: 'Failed to send custom notification',
+        status: 'error',
+        error: error.message,
+      };
+    }
+  }
+
+  // Método para enviar notificación de error de inicio de sesión por SMS
+  async notifyUserErrorSms(phoneNumber: string) {
+    const message = 'Su nombre de usuario o contraseña es incorrecto.';
+    await this.smsService.sendSms(phoneNumber, message);
+    return { message: 'Notificación de error enviada por SMS correctamente.' };
+  }
 
   async notifyUserError(email: string) {
     const subject = 'Error en el inicio de sesión';

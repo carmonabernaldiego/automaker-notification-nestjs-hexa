@@ -1,10 +1,35 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { EventPattern } from '@nestjs/microservices';
 
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
+
+  @Post('custom-notification')
+  async sendCustomNotification(
+    @Body() body: { email: string; subject: string; message: string },
+  ) {
+    return this.notificationsService.sendCustomNotification(
+      body.email,
+      body.subject,
+      body.message,
+      {
+        preHeader: 'Información Importante',
+        footerText: 'Este es un mensaje automatizado. Por favor, no responda.',
+      },
+    );
+  }
+
+  @Post('send-sms') async sendSmsNotification(@Body() body: any) {
+    const { type, phoneNumber, code } = body;
+    switch (type) {
+      case 'login_error':
+        return await this.notificationsService.notifyUserErrorSms(phoneNumber); // Agrega más casos si tienes otras notificaciones
+      default:
+        throw new Error('Tipo de notificación no soportado');
+    }
+  }
 
   // Método que escucha los mensajes en la cola de RabbitMQ
   @EventPattern('send_notification')
